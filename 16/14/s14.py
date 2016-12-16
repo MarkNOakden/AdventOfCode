@@ -10,6 +10,8 @@ parser.add_argument('-s', '--salt', help='salt value', type=str)
 parser.add_argument('-v', '--verbose',
                     help='dump out all keys and the quint table',
                     action='store_true')
+parser.add_argument('-o', '--optimise', help='use sets for lookup',
+                    action='store_true')
 
 args = parser.parse_args()
 
@@ -24,6 +26,14 @@ else:
     part = 1
 #salt = 'abc'
 #
+# for an attempted optimisation (use sets instead of lists)
+class mySet(set):
+    def __init__(self, *args, **kwargs):
+        set.__init__(self, *args, **kwargs)
+
+    def append(self, *args, **kwargs):
+        self.add(*args, **kwargs)
+
 # triples and quins will keep a list of all indices that generate
 # triples or quintuplets of each of the possible digits
 #
@@ -33,8 +43,12 @@ triples = {}
 quins = {}
 
 for i in hexdigits:
-    triples[i] = []
-    quins[i] = []
+    if args.optimise:
+        triples[i] = mySet()
+        quins[i] = mySet()
+    else:
+        triples[i] = []
+        quins[i] = []
 
 keys = []
 
