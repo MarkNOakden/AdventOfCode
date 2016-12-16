@@ -1,6 +1,30 @@
 #!/usr/bin/env python2
 from collections import deque
 import unittest
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-p', '--part',
+                    help='part 1 or 2 (0 to test)',
+                    type=int)
+parser.add_argument('-f', '--favourite',
+                    help='designer\'s favourite number',
+                    type=int)
+parser.add_argument('-v', '--verbose',
+                    help='whether to dump maps or not',
+                    action='store_true')
+
+args = parser.parse_args()
+
+if args.part is None:
+    part = 0
+else:
+    part = args.part
+
+if args.favourite is None:
+    favourite = 1362
+else:
+    favourite = args.favourite
 
 class TestIt(unittest.TestCase):
     def setUp(self):
@@ -90,19 +114,22 @@ class Map(object):
         
     
 if __name__ == '__main__':
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestIt)
-    unittest.TextTestRunner(verbosity=2).run(suite)
+    if part == 0:
+        suite = unittest.TestLoader().loadTestsFromTestCase(TestIt)
+        unittest.TextTestRunner(verbosity=2).run(suite)
+    elif part == 1:
+        part1 = Map(favourite)
+        print 'Shortest path to (31,39) was {} steps'.format(
+            part1.getDepthByBFS((1,1), (31, 39)))
+        if args.verbose:
+            part1.dump(41, 41)
+    elif part ==2:
+        part2 = Map(favourite)
+        part2.getDepthByBFS((1,1), (31, 39), maxdepth=50)
+        visitcount = part2.visitcount()
+        if args.verbose:
+            part2.dump(41, 41)
 
-    part1 = Map(1362)
-    print 'Shortest path to (31,39) was {} steps'.format(
-        part1.getDepthByBFS((1,1), (31, 39)))
-    #part1.dump(41, 41)
-
-    part2 = Map(1362)
-    part2.getDepthByBFS((1,1), (31, 39), maxdepth=50)
-    visitcount = part2.visitcount()
-    #part2.dump(41, 41)
-
-    print '{} nodes were visited within 50 steps'.format(visitcount)
+        print '{} nodes were visited within 50 steps'.format(visitcount)
 
     
