@@ -79,7 +79,7 @@ if __name__ == '__main__':
     outputs  = machine.allMols()
     print len(outputs), 'distinct molecules'
 
-
+    # Part 2 doesn't work!
     backsubs = []
     for a, b in subs:
         if a != 'e':

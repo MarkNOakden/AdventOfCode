@@ -1,25 +1,18 @@
 #!/usr/bin/env python2
-from random import randint
-import re
+#from random import randint
+#import re
+import random
 
-def applicable(subs, mol):
-    return [i for i in subs if isSubList(i[1], mol)]
-
-def isSubList(s, l):
-    for i in range(len(l)-len(s)):
-        if l[i:i+len(s)] == s:
-            return True
-    return False
-
-def SubListIndex(s, l):
-    for i in range(len(l)-len(s)):
+def subListIndex(s, l):
+    for i in range(0, len(l)-len(s)+1):
         if l[i:i+len(s)] == s:
             return i
-    
-    
-def doSub(s, m):
-    head, x, tail = m.rpartition(s[1])
-    return head+s[0]+tail
+    return None
+
+def doSub(old, new, m):
+    start = subListIndex(old, m)
+    m[start:start+len(old)] = new
+    return m
 
 def tokenise(mol):
     tokens = []
@@ -34,109 +27,83 @@ def tokenise(mol):
         i+=1
     return tokens
 
+def success(mol):
+    return mol == ['e']
 
-def randomFrom(l):
-    return l[randint(0,len(l)-1)]
+def shorten(s, N):
+    if len(s) <=N:
+        return s
+    half = (N-2)/2
+    return s[:half]+'..'+s[-half:]
+
+def checkmol(molstr, patterns):
+
+    #print '|'.join([''.join(x[1][::-1]) for x in patterns])
+    #patterns.sort(key=lambda x: -len(x[1]))
+    random.shuffle(patterns)
+    #for subst, pat in patterns:
+    #    print ''.join(pat),'=>',''.join(subst)
         
+    mol = tokenise(molstr)
+    mol.reverse()
+
+    steps = 0
+    #print 'len mol', len(mol)
+    #print 'mol: ' + shorten(''.join(mol), 72)
+
+    #print '*'*36+' start '+'*'*36
+
+    canSub = True
+
+    while canSub:
+        canSub = False
+        for subst, pat in patterns:
+            patPos = subListIndex(pat, mol)
+            if patPos is not None:
+                canSub = True
+                break
+        if canSub:
+            steps += 1
+            #print 'step',steps,'subst ' + ''.join(pat) + ' => ' + ''.join(subst)
+            #print 'sub '+''.join(pat[::-1])+' for '+''.join(subst)
+            doSub(pat, subst, mol)
+            #print 'mol:',shorten(''.join(mol), 72)
+            #print 'length is now:',len(mol)
+            #print '#'*(len(mol)/5)
+
+
+    #print '*'*37+' end '+'*'*37
+
+    #print 'got to', ''.join(mol), 'after', steps, 'steps'
+    if success(mol):
+        return steps
+    else:
+        return -1
+
 if __name__ == '__main__':
 
     # get the input
     fd = open("input.txt", 'r')
     input_data = fd.read()
     fd.close()
-
-    nonArSubs = []
-    ArSubs = []
+    
+    patterns = []
     for l in input_data.splitlines():
         atomIn, sep, atomOut = l.partition(' => ')
         if sep == '':
             if atomIn != '':
                 molstr = atomIn
         else:
-            if atomOut.endswith('Ar'):
-                ArSubs.append((atomIn, tokenise(atomOut)))
-            else:
-                nonArSubs.append((atomIn, tokenise(atomOut)))
-
-    ArSubs.sort(key=lambda x: -len(x[1]))
-    nonArSubs.sort(key=lambda x: -len(x[1]))
-
-    mol = tokenise(molstr)
-    Rn = 'Rn'
-    Ar = 'Ar'
+            subst = tokenise(atomOut)
+            subst.reverse()
+            patterns.append(([atomIn], subst))
 
     
-    pos = 0
-    lastRn = None
-    lastAr = None
-    steps = 0
-    i = 0
-    print mol
-    while True:
-        if mol[i] == Rn:
-            print 'lastRn =',lastRn
-            lastRn = i
-        elif mol[i] == Ar:
-            print 'lastAr =',lastAr
-            lastAr = i
-            chunk = mol[lastRn-1:lastAr+1]
-            ArSubList = applicable(ArSubs, chunk)
-            if len(ArSubList) == 1:
-                a, b = ArSubList[0]
-                print 'Pre Subbing',b,'in mol',mol[lastRn-1:lastAr+1],'for',a
-                steps += 1
-                mol[lastRn-1:lastAr+1] = a
-            else:
-                SubList = applicable(nonArSubs, chunk)
-                while True:
-                    ArSubList = applicable(ArSubList, chunk)
-                    if len(ArSubList) ==1:
-                        a, b = ArSubList[0]
-                        print 'ArLoop Subbing',b,'in mol',mol[lastRn-1:lastAr+1],'for',a
-                        steps += 1
-                        mol[lastRn-1:lastAr+1] = a
-                        break
-                    while SubList != []:
-                        a, b = SubList[0]
-                        steps += 1
-                        indx = SubListIndex(b, chunk)
-                        if indx != -1:
-                            print 'Subloop Subbing',b,'in mol',\
-                                mol[lastRn-1+indx:lastRn-1+indx+len(b)],'for',a
-                            mol[lastRn-1+indx:lastRn-1+indx+len(b)] = a # not right - need to replace just hte match for this sub
-                        LastAr = LastAr - (len(b)-len(a))
-                        chunk = mol[lastRn-1:LastAr+1]
-                        SubList = applicable(nonArSubs, chunk)
-        i += 1
-                    
-                        
-            
-        
-    
-    # s = 0
+    res = checkmol(molstr, patterns)
 
-    # while True:
-    #     print 'Molecule length', len(mol)
-    #     subMols = []
-    #     while mol != '':
-    #         head, Ar, mol = mol.partition('Ar')
-    #         subMols.append(head+Ar)
+    if res == -1:
+        print 'part 2 failed'
+    else:
+        print 'part 2: steps {}'.format(res)
 
-    #     for i, m in enumerate(subMols):
-    #         print "Submolecule {}: {}".format(i, m)
-
-
-    #         while applicable(nonArSubs, m) != []:
-    #             s += 1
-    #             m = doSub(applicable(nonArSubs, m)[0], m)
-    #             print s, m
-    #         while applicable(ArSubs, m) != []:
-    #             s += 1
-    #             m = doSub(applicable(ArSubs, m)[0], m)
-    #             print s, m
-
-    #         subMols[i] = m
-
-    #         print 'after ',s,' :',m
-
-    #     mol = ''.join(subMols)
+    print successes, failures, oddities
