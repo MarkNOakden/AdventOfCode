@@ -45,40 +45,40 @@ class TestIt(unittest.TestCase):
     def test_1(self):
         global PASSCODE
         PASSCODE = 'ihgpwlah'
-        self.assertEqual(getPathByBFS(STARTPOS),
+        self.assertEqual(solveUsingBFS(STARTPOS),
                          'DDRRRD')
 
     def test_2(self):
         global PASSCODE
         PASSCODE = 'kglvqrro'
-        self.assertEqual(getPathByBFS(STARTPOS),
+        self.assertEqual(solveUsingBFS(STARTPOS),
                          'DDUDRLRRUDRD')
 
     def test_3(self):
         global PASSCODE
         PASSCODE = 'ulqzkmiv'
-        self.assertEqual(getPathByBFS(STARTPOS),
+        self.assertEqual(solveUsingBFS(STARTPOS),
                          'DRURDRUDDLLDLUURRDULRLDUUDDDRR')
 
     def test_4(self):
         global PASSCODE
         PASSCODE = 'ihgpwlah'
-        self.assertEqual(getPathByBFS(STARTPOS, getLongest=True),
+        self.assertEqual(solveUsingBFS(STARTPOS, getLongest=True),
                          370)
 
     def test_5(self):
         global PASSCODE
         PASSCODE = 'kglvqrro'
-        self.assertEqual(getPathByBFS(STARTPOS, getLongest=True),
+        self.assertEqual(solveUsingBFS(STARTPOS, getLongest=True),
                          492)
 
     def test_6(self):
         global PASSCODE
         PASSCODE = 'ulqzkmiv'
-        self.assertEqual(getPathByBFS(STARTPOS, getLongest=True),
+        self.assertEqual(solveUsingBFS(STARTPOS, getLongest=True),
                          830)
 
-def getPathByBFS(start, getLongest=False):
+def solveUsingBFS(start, getLongest=False):
     queue = deque()
     queue.append(start)
 
@@ -134,8 +134,8 @@ if __name__ == '__main__':
         suite = unittest.TestLoader().loadTestsFromTestCase(TestIt)
         unittest.TextTestRunner(verbosity=2).run(suite)
     elif part == 1:
-        print getPathByBFS(STARTPOS)
+        print solveUsingBFS(STARTPOS)
     elif part == 2:
-        print getPathByBFS(STARTPOS, getLongest=True)
+        print solveUsingBFS(STARTPOS, getLongest=True)
     else:
         print 'Part {} not implemented'.format(part)
