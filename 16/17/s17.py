@@ -3,7 +3,6 @@ import unittest
 import argparse
 from collections import deque
 from hashlib import md5
-import time
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-p', '--part',
