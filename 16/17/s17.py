@@ -11,6 +11,9 @@ parser.add_argument('-p', '--part',
 parser.add_argument('-v', '--verbose',
                     help='produce verbose output',
                     action='store_true')
+parser.add_argument('-d', '--dumplengths',
+                    help='dump table of path length counts to stdout',
+                    action='store_true')
 parser.add_argument('-c', '--code',
                     help='Easter bunny security passcode',
                     type=str)
@@ -78,7 +81,10 @@ class TestIt(unittest.TestCase):
         self.assertEqual(solveUsingBFS(STARTPOS, getLongest=True),
                          830)
 
+lengths = {}
 def solveUsingBFS(start, getLongest=False):
+    global lengths
+    lengths = {}
     queue = deque()
     queue.append(start)
 
@@ -96,6 +102,10 @@ def solveUsingBFS(start, getLongest=False):
             if not getLongest: # part 1
                 return path
             longest = len(path) # BFS so each time is len >= last
+            if longest in lengths:
+                lengths[longest] += 1
+            else:
+                lengths[longest] = 1
             continue # no children at finalPos
 
         children = getChildren((x, y, path))
@@ -137,5 +147,10 @@ if __name__ == '__main__':
         print solveUsingBFS(STARTPOS)
     elif part == 2:
         print solveUsingBFS(STARTPOS, getLongest=True)
+        if args.dumplengths:
+            print ''
+            print 'len, count'
+            for k in sorted(lengths):
+                print '{:3}, {}'.format(k,lengths[k])
     else:
         print 'Part {} not implemented'.format(part)
