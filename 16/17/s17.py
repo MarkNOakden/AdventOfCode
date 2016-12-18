@@ -148,9 +148,9 @@ if __name__ == '__main__':
     elif part == 2:
         print solveUsingBFS(STARTPOS, getLongest=True)
         if args.dumplengths:
-            print ''
-            print 'len, count'
-            for k in sorted(lengths):
-                print '{:3}, {}'.format(k,lengths[k])
+            with open('lengths_{}.txt'.format(PASSCODE), 'w') as fd:
+                fd.write('len, count({})\n'.format(PASSCODE))
+                for k in sorted(lengths):
+                    fd.write('{:5}, {}\n'.format(k,lengths[k]))
     else:
         print 'Part {} not implemented'.format(part)
