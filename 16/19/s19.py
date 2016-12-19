@@ -79,24 +79,29 @@ def lastElf(elves, roundfunc):
         elves = roundfunc(elves)
     return [e for e in elves if e[1]][0][0] + 1 # e[0][0] is the index
 #
-# based on the pattern of answers ...
-# answer for N a power of 3 is N
-# answers fro N-1, N-2 etc. reduce by 2 each time until the mid-point
-# with the next lower power of 3 when they start to reduce by 1
+# based on the pattern of answers ...  answer for N a power of 3 is N
+# answers for N-1, N-2 etc. reduce by 2 each time until the answer is
+# the mid-point with the next lower power of 3 when they start to
+# reduce by 1
 # 
 def algebraicLastElf(N):
-    lowerExponent = floor(log(N)/log(3))
+    lowerExponent = int(floor(log(N)/log(3)))
     upperExponent = lowerExponent + 1
 
     lower = pow(3, lowerExponent)
     upper = pow(3, upperExponent)
 
-    if N - lower > upper - N:
-        ans = upper - 2 * (upper - N)
-    else:
+    if N == lower:
+        ans = N
+    elif N <= lower * 2:
         ans = N - lower
+    else:
+        ans = upper - (upper - N) * 2
 
+    #print 'N={}, lower={}, upper={}, ans={}'.format(N, lower,
+    #                                                upper, ans)
     return int(ans)
+
 #
 # Added after initial solution:
 #
