@@ -103,6 +103,41 @@ def algebraicLastElf(N):
 # Optimising the brute force by implementing a circular
 # linked list structure
 #
+# If we maintain a reference to the mid-point elf, then as we delete
+# him, the new mid-point elf will be his .next, or the .next of that
+# elf depending on whether there are an odd or even number of elves
+# left
+#
+# e.g. (* is next elf to steal, + is the victim)
+#
+#   
+#   1*
+# 5   2
+#  4 3+
+#
+# becomes
+#
+#   1
+# 5+  2*
+#   4
+#
+# (four elves left, so the new victim is the successor of the
+# successor of the original victim).  This then becomes
+#
+#   1+
+#     2
+#   4*
+#
+# (next victim is successor of the previous one as three is odd)
+#
+# finally
+#
+#  2*
+#
+#  4+
+#
+# (two elves left so next victim is successor of the successor)
+
 class Elf(object):
     def __init__(self, index):
         self.index = index
