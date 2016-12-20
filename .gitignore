@@ -3,3 +3,4 @@
 **/Day\ *.htm
 #*#
 *.pyc
+.ipynb_checkpoints
