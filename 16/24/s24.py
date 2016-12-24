@@ -22,7 +22,7 @@ class TestIt(unittest.TestCase):
                          set(('0', '1', '2', '3', '4')))
         
     def test_1(self):
-        self.assertEqual(self.map.getDepth()[0], 14)
+        self.assertEqual(self.map.getDepth(), 14)
 
     def test_2(self):
         self.assertEqual(self.map.startPos(), (1, 1))
