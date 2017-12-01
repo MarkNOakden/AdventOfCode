@@ -3,6 +3,8 @@ import unittest
 from collections import deque
 from itertools import combinations
 import argparse
+import time
+
 #
 # optimised version created after solving the problem using my
 # non-optimised s11.py version
@@ -174,6 +176,7 @@ def chipsSafe(pos):
     return True
    
 if __name__ == '__main__':
+    start = time.time()
     if part == 0:
         suite = unittest.TestLoader().loadTestsFromTestCase(TestIt)
         unittest.TextTestRunner(verbosity=2).run(suite)
@@ -209,8 +212,8 @@ if __name__ == '__main__':
         print 'Part 1 number of steps is {}'.format(getDepthByBFS(startpos))
     elif part == 2:
         pairs = 7
-        names = ['Po', 'Tm', 'Pm', 'Ru', 'Co', 'El', 'Dl']
-        startpos = [1, # Elevator
+        names = ('Po', 'Tm', 'Pm', 'Ru', 'Co', 'El', 'Dl')
+        startpos = (1, # Elevator
                     2, # PoM
                     1, # TmM
                     2, # PmM
@@ -224,11 +227,13 @@ if __name__ == '__main__':
                     1, # RuG
                     1, # CoG
                     1, # ElG
-                    1] # DlG
+                    1) # DlG
         dump(startpos)
         print 'Part 2 number of steps is {}'.format(getDepthByBFS(startpos))
     else:
         print 'part {} not implemented'.format(part)
-
+    
+    end = time.time()
+    print 'elapsed time {:.2f}'.format(end - start)
 
     

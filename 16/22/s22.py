@@ -4,6 +4,7 @@ import unittest
 import argparse
 import re
 from itertools import permutations
+from collections import deque
 
 class TestIt(unittest.TestCase):
     def test_1(self):
@@ -27,15 +28,7 @@ class Node(object):
         return int(100 * self.used / self.size)
     
     def move(otherNode):
-        assert(self.isNeighbour(otherNode))
-
-    def isNeighbour(self, otherNode):
-        return otherNode in self.neighbours()
-
-    def neighbours(self):
-        l = []
-        #find neighbours here
-        return l
+        pass
 
     def gridrep(self):
         l, c, r = ' . '
@@ -109,6 +102,9 @@ class Grid(object):
         self.columns = columns
         self.nodelist = []
         self.grid = []
+        self.emptyNode = None
+        self.goalData = None
+        self.accessNode = (0, 0)
         for _ in range(columns):
             l = []
             for z in range(rows):
@@ -118,23 +114,66 @@ class Grid(object):
     def __getitem__(self, i):
         return self.grid[i]
 
+    def at(self, coordtuple):
+        return self.grid[coordtuple[0]][coordtuple[1]]
+
     def initialise(self, nodeList):
         print 'initialising'
         self.nodelist = nodeList[:] # copy
         for node in self.nodelist:
             self.grid[node.x][node.y] = node
+            if node.used == 0:
+                self.emptyNode = (node.x, node.y)
         return self
 
     def dump(self, showmoves=False):
         s = ''
         for y in range(self.rows):
             for x in range(self.columns):
-                s += grid[x][y].gridrep()
+                s += self[x][y].gridrep()
             s += '\n'
         print s
         return s
 
-            
+    def solveByBFS(self, maxdepth=None):
+        depth = 0
+        queue = deque()
+        start = self.emptyNode
+        goalLoc = self.goalData
+        access = (0, 0)
+        queue.append((depth, start, goalLoc))
+        # still doing the canonical "visited is set()" thang
+        # since I hear "in set()" is quicker than  "in dict()"
+        visited = set((start, goalLoc))
+
+        while queue:
+            depth, node, path = queue.popleft()
+            if maxdepth is not None:
+                if depth >= maxdepth:
+                    return None
+
+            if goalLoc == access:
+                return depth
+
+            nextList = self.getChildren(node)
+            for childpos in nextList:
+                newpath = list(path)
+                if childpos not in visited:
+                    r, c = childpos
+                    newpath.append(childpos)
+                    queue.append((depth + 1, childpos, newpath))
+                    visited.add((childpos, goalLoc))
+        # No path
+        return None
+
+    def getChildren(node):
+        x, y = node
+        children = []
+        if x > 0:
+            if self
+            children.append((x-1, y))
+        if y > 0:
+            children.append
 
 def getPairs(nodeList, filterFunc):
     return [i for i in permutations(nodeList, 2) if viablePair(i[0], i[1])]
@@ -173,9 +212,13 @@ if __name__ == '__main__':
         assert(len(nl) == rows * columns)
         grid = Grid(rows, columns)
         grid.initialise(nl)
-        grid.dump()
         grid[0][0].isAccessNode = True
         grid[-1][0].containsGoalData = True
+        grid.goalData = (columns-1, 0)
+        assert(grid.at(grid.goalData).containsGoalData)
         grid.dump()
+        length = grid.solveByBFS()
+        print length
+        
     else:
         print 'Part {} not implemented'.format(part)
