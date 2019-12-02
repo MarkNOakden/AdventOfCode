@@ -5,3 +5,5 @@
 *.pyc
 .ipynb_checkpoints
 .vscode
+.idea
+/18/22/vid.webm
