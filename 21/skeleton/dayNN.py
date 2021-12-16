@@ -9,5 +9,5 @@ def part2(*args):
 
 
 if __name__ == '__main__':
-    print('Part1: ', part1(depths))
-    print('Part2: ', part2(depths))
+    print('Part1: ', part1())
+    print('Part2: ', part2())
