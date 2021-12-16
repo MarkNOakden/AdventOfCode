@@ -19,7 +19,7 @@ def part1(df):
 
 def part2(df, window_length=3):
     ra_depths = df.rolling(window=window_length).sum()
-    return (part1(ra_depths))
+    return part1(ra_depths)
 
 
 if __name__ == '__main__':
