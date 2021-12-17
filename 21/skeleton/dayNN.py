@@ -4,10 +4,18 @@
 def part1(*args):
     pass
 
+
 def part2(*args):
     pass
 
 
+def parse_input(input_fd):
+    pass
+
+
 if __name__ == '__main__':
+    with open('input.txt') as fd:
+        parse_input(fd)
+
     print('Part1: ', part1())
     print('Part2: ', part2())
