@@ -17,10 +17,16 @@ class TestDayNN(unittest.TestCase):
         self.part2_01_result = None
 
     def test_part1_01(self):
-        self.assertEqual(part1(self.test_data), self.part1_01_result)
+        self.assertEqual(
+            self.part1_01_result,
+            part1(self.test_data)
+        )
 
     def test_part2_01(self):
-        self.assertEqual(part2(self.test_data), self.part2_01_result)
+        self.assertEqual(
+            self.part2_01_result,
+            part2(self.test_data)
+        )
 
 
 if __name__ == '__main__':

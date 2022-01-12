@@ -15,7 +15,7 @@ def parse_input(input_fd):
 
 if __name__ == '__main__':
     with open('input.txt') as fd:
-        parse_input(fd)
+        data = parse_input(fd)
 
-    print('Part1: ', part1())
-    print('Part2: ', part2())
+    print('Part1: ', part1(data))
+    print('Part2: ', part2(data))
